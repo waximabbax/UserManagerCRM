@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home - Portfolio Platform{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h1 class="fade-in-up">Welcome to Portfolio Platform</h1>
+                <p class="lead fade-in-up">Showcase your work, share your thoughts, and connect with others in our comprehensive portfolio and blogging platform.</p>
+                <div class="fade-in-up">
+                    <a href="{% url 'portfolio:project_list' %}" class="btn btn-primary btn-lg me-3">Explore Projects</a>
+                    <a href="{% url 'users:register' %}" class="btn btn-outline-light btn-lg">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2>Why Choose Portfolio Platform?</h2>
+                <p class="lead text-muted">Everything you need to build and showcase your professional presence</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-laptop-code fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">Project Showcase</h5>
+                        <p class="card-text">Display your projects with rich descriptions, images, and live demo links. Organize by categories and technologies.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-blog fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">Professional Blogging</h5>
+                        <p class="card-text">Share your knowledge and insights with a full-featured blogging platform with categories, tags, and comments.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">Professional Network</h5>
+                        <p class="card-text">Connect with other professionals, showcase your skills, experience, and build your professional network.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Projects Section -->
+{% if featured_projects %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <h2>Featured Projects</h2>
+                <p class="lead text-muted">Check out some of the amazing projects from our community</p>
+            </div>
+        </div>
+        <div class="row">
+            {% for project in featured_projects %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card project-card h-100">
+                    {% if project.featured_image %}
+                        <img src="{{ project.featured_image.url }}" class="card-img-top" alt="{{ project.title }}">
+                    {% else %}
+                        <div class="card-img-top bg-primary d-flex align-items-center justify-content-center text-white">
+                            <i class="fas fa-project-diagram fa-3x"></i>
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ project.title }}</h5>
+                        <p class="card-text">{{ project.short_description }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">by {{ project.user.full_name }}</small>
+                            <a href="{{ project.get_absolute_url }}" class="btn btn-primary btn-sm">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center">
+            <a href="{% url 'portfolio:project_list' %}" class="btn btn-primary">View All Projects</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Statistics Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="stat-card">
+                    <span class="stat-number">{{ total_projects|default:"0" }}</span>
+                    <span class="stat-label">Projects</span>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="stat-card">
+                    <span class="stat-number">{{ total_users|default:"0" }}</span>
+                    <span class="stat-label">Developers</span>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="stat-card">
+                    <span class="stat-number">{{ total_categories|default:"0" }}</span>
+                    <span class="stat-label">Categories</span>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="stat-card">
+                    <span class="stat-number">{{ completed_projects|default:"0" }}</span>
+                    <span class="stat-label">Completed</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2>Ready to Showcase Your Work?</h2>
+                <p class="lead">Join our community of developers and start building your professional portfolio today.</p>
+                {% if not user.is_authenticated %}
+                    <a href="{% url 'users:register' %}" class="btn btn-light btn-lg me-3">Sign Up Now</a>
+                    <a href="{% url 'users:login' %}" class="btn btn-outline-light btn-lg">Sign In</a>
+                {% else %}
+                    <a href="{% url 'users:dashboard' %}" class="btn btn-light btn-lg me-3">Go to Dashboard</a>
+                    <a href="{% url 'portfolio:project_list' %}" class="btn btn-outline-light btn-lg">Browse Projects</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
